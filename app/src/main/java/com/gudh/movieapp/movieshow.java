@@ -23,11 +23,26 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class movieshow extends AppCompatActivity {
     TextView mname,mcategory,mrating,mrelasedate,mpopularity,mlanguage,mdetails;
     ArrayList<String> arcategory;
     ImageView movieimage;
+
+
+
+
+    // Retrofit for
+//    String url = "https://api.themoviedb.org";
+//    String api_key = "55957fcf3ba81b137f8fc01ac5a31fb5";
+//    String categoryr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,19 +59,24 @@ public class movieshow extends AppCompatActivity {
         mdetails = findViewById(R.id.movie_details);
 
         String movieid = getIntent().getStringExtra("movieid");
+        String url = String.format("https://api.themoviedb.org/3/movie/%s?api_key=55957fcf3ba81b137f8fc01ac5a31fb5",movieid);
+
+//        categoryr = movieid;
+
+
         final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setTitle("Loading...");
         dialog.setCancelable(false);
         dialog.show();
 
 
-        String url = String.format("https://api.themoviedb.org/3/movie/%s?api_key=55957fcf3ba81b137f8fc01ac5a31fb5",movieid);
 
+        //--------------volley library ------------
         RequestQueue requestQueue;
         requestQueue = Volley.newRequestQueue(this);
 
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
+                new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -69,16 +89,16 @@ public class movieshow extends AppCompatActivity {
                             mdetails.setText(response.getString("overview"));
                             mrelasedate.setText(response.getString("release_date"));
 
-                            String imgurl = "https://image.tmdb.org/t/p/w780"+response.getString("poster_path");
+                            String imgurl = "https://image.tmdb.org/t/p/w780" + response.getString("poster_path");
                             Picasso.with(movieshow.this).load(imgurl).into(movieimage);
 
 
                             String category = "";
                             JSONArray jsonArray = response.getJSONArray("genres");
-                            for (int i = 0 ; i< jsonArray.length(); i++){
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject mdetails = jsonArray.getJSONObject(i);
                                 String name = mdetails.getString("name");
-                                category = category+" * "+name;
+                                category = category + " * " + name;
                             }
                             mcategory.setText(category);
                         } catch (JSONException e) {
@@ -94,6 +114,43 @@ public class movieshow extends AppCompatActivity {
             }
         });
         requestQueue.add(jsonArrayRequest);
+
+
+
+
+
+
+
+
+
+
+         /*  -- retrofit library-------
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        myapi api = retrofit.create(myapi.class);
+
+        Call<model> call = api.getmodels(categoryr,api_key);
+        call.enqueue(new Callback<model>() {
+            @Override
+            public void onResponse(Call<model> call, Response<model> response) {
+                 model data = response.body();
+                System.out.println("the model"+data.getVote_average());
+                for (int i=0;i<data.size();i++){
+                    System.out.println("the original "+data.get(i).getOriginal_title());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<model> call, Throwable t) {
+                System.out.println("the failure");
+            }
+        });
+
+        */
+        
+
 
     }
 }
