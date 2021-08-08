@@ -32,11 +32,13 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView movierecycle;
     ArrayList<ArrayList<String>> arr;
     ArrayList<String> arr1;
+    ArrayList<String> nothing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // this is main activity
+        //this is how
         movierecycle = findViewById(R.id.movierecycle);
         arr = new ArrayList<>();
         setTitle("Dashboard");
